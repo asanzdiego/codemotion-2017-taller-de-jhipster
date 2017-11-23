@@ -46,6 +46,16 @@ currentAccount: any;
         });
     }
 
+    getTrClassFromTask(task: Task) {
+        if (task.priority.toString() === 'HIGH') {
+            return 'table-danger';
+        } else if (task.priority.toString() === 'NORMAL') {
+            return 'table-warning';
+        } else if (task.priority.toString() === 'LOW') {
+            return 'table-success';
+        }
+        return '';
+    }
     loadAll() {
         this.taskService.query({
             page: this.page - 1,
