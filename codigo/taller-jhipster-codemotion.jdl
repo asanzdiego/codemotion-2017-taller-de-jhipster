@@ -1,0 +1,21 @@
+enum Priority {
+    HIGH, NORMAL, LOW
+}
+
+entity Task {
+    title String required,
+    priority Priority required,
+    user String required,
+    expirationDate LocalDate
+}
+
+entity Category {
+    title String required,
+    image ImageBlob
+}
+
+relationship OneToMany {
+    Category{task} to Task{category}
+}
+
+paginate Task, Category with pagination
