@@ -2,24 +2,24 @@
     "codemotionApp": {
         "task" : {
             "home": {
-                "title": "Tasks",
-                "createLabel": "Crear nuevo Task",
-                "createOrEditLabel": "Crear o editar Task"
+                "title": "Tareas",
+                "createLabel": "Crear nueva Tarea",
+                "createOrEditLabel": "Crear o editar Tarea"
             },
-            "created": "Un nuevo Task ha sido creado con el identificador {{ param }}",
-            "updated": "Un Task ha sido actualizado con el identificador {{ param }}",
-            "deleted": "Un Task ha sido eliminado con el identificador {{ param }}",
+            "created": "Una nueva Tarea ha sido creada con el identificador {{ param }}",
+            "updated": "Una Tarea ha sido actualizada con el identificador {{ param }}",
+            "deleted": "Una Tarea ha sido eliminada con el identificador {{ param }}",
             "delete": {
-                "question": "¿Seguro que quiere eliminar Task {{ id }}?"
+                "question": "¿Seguro que quiere eliminar Tarea {{ id }}?"
             },
             "detail": {
-                "title": "Task"
+                "title": "Tarea"
             },
-            "title": "Title",
-            "priority": "Priority",
-            "user": "User",
-            "expirationDate": "Expiration Date",
-            "category": "Category"
+            "title": "Título",
+            "priority": "Prioridad",
+            "user": "Usario",
+            "expirationDate": "Fecha de expiración",
+            "category": "Categoría"
         }
     }
 }

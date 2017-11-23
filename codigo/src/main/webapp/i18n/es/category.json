@@ -2,22 +2,22 @@
     "codemotionApp": {
         "category" : {
             "home": {
-                "title": "Categories",
-                "createLabel": "Crear nuevo Category",
-                "createOrEditLabel": "Crear o editar Category"
+                "title": "Categorias",
+                "createLabel": "Crear nueva Categoría",
+                "createOrEditLabel": "Crear o editar Categoría"
             },
-            "created": "Un nuevo Category ha sido creado con el identificador {{ param }}",
-            "updated": "Un Category ha sido actualizado con el identificador {{ param }}",
-            "deleted": "Un Category ha sido eliminado con el identificador {{ param }}",
+            "created": "Una nueva Categoría ha sido creada con el identificador {{ param }}",
+            "updated": "Una Categoría ha sido actualizada con el identificador {{ param }}",
+            "deleted": "Una Categoría ha sido eliminada con el identificador {{ param }}",
             "delete": {
-                "question": "¿Seguro que quiere eliminar Category {{ id }}?"
+                "question": "¿Seguro que quiere eliminar Categoría {{ id }}?"
             },
             "detail": {
-                "title": "Category"
+                "title": "Categoría"
             },
-            "title": "Title",
-            "image": "Image",
-            "task": "Task"
+            "title": "Título",
+            "image": "Imagen",
+            "task": "Tarea"
         }
     }
 }

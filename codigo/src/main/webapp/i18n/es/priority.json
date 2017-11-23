@@ -2,9 +2,9 @@
     "codemotionApp": {
         "Priority" : {
             "null": "",
-            "HIGH": "HIGH",
+            "HIGH": "ALTA",
             "NORMAL": "NORMAL",
-            "LOW": "LOW"
+            "LOW": "BAJA"
         }
     }
 }
