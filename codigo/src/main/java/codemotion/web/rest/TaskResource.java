@@ -128,8 +128,8 @@ public class TaskResource {
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
         log.debug("REST request to get Task : {}", id);
         Task task = taskRepository.findOne(id);
-        if (task == null || (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
-			&& !SecurityUtils.getCurrentUserLogin().equals(task.getUser()))) {
+        if (task != null && !SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
+			&& !SecurityUtils.getCurrentUserLogin().equals(task.getUser())) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(task));
@@ -146,8 +146,8 @@ public class TaskResource {
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         log.debug("REST request to delete Task : {}", id);
         Task taskSaved = taskRepository.findOne(id);
-        if (taskSaved == null || (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
-	        && !SecurityUtils.getCurrentUserLogin().equals(taskSaved.getUser()))) {
+        if (taskSaved != null && !SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
+	        && !SecurityUtils.getCurrentUserLogin().equals(taskSaved.getUser())) {
 	        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         taskRepository.delete(id);

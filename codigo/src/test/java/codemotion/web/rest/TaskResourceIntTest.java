@@ -4,6 +4,7 @@ import codemotion.CodemotionApp;
 
 import codemotion.domain.Task;
 import codemotion.repository.TaskRepository;
+import codemotion.repository.UserRepository;
 import codemotion.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -52,7 +54,7 @@ public class TaskResourceIntTest {
 
     private static final LocalDate DEFAULT_EXPIRATION_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_EXPIRATION_DATE = LocalDate.now(ZoneId.systemDefault());
-
+    
     @Autowired
     private TaskRepository taskRepository;
 
@@ -105,6 +107,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void createTask() throws Exception {
         int databaseSizeBeforeCreate = taskRepository.findAll().size();
 
@@ -199,6 +202,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void getAllTasks() throws Exception {
         // Initialize the database
         taskRepository.saveAndFlush(task);
@@ -216,6 +220,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void getTask() throws Exception {
         // Initialize the database
         taskRepository.saveAndFlush(task);
@@ -241,6 +246,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void updateTask() throws Exception {
         // Initialize the database
         taskRepository.saveAndFlush(task);
@@ -271,6 +277,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void updateNonExistingTask() throws Exception {
         int databaseSizeBeforeUpdate = taskRepository.findAll().size();
 
@@ -289,6 +296,7 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void deleteTask() throws Exception {
         // Initialize the database
         taskRepository.saveAndFlush(task);
