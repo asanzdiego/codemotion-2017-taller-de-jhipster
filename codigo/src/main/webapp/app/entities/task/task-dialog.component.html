@@ -63,7 +63,7 @@
             <label class="form-control-label" jhiTranslate="codemotionApp.task.category" for="field_category">Category</label>
             <select class="form-control" id="field_category" name="category" [(ngModel)]="task.category" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="categoryOption.id === task.category?.id ? task.category : categoryOption" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.id}}</option>
+                <option [ngValue]="categoryOption.id === task.category?.id ? task.category : categoryOption" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.title}}</option>
             </select>
         </div>
     </div>

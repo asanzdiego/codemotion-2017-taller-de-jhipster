@@ -34,7 +34,7 @@
                 <td>{{task.expirationDate | date:'mediumDate'}}</td>
                 <td>
                     <div *ngIf="task.category">
-                        <a [routerLink]="['../category', task.category?.id ]" >{{task.category?.id}}</a>
+                        <a [routerLink]="['../category', task.category?.id ]" >{{task.category?.title}}</a>
                     </div>
                 </td>
                 <td class="text-right">
