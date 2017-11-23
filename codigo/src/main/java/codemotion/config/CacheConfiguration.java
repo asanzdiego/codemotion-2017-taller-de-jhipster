@@ -41,6 +41,9 @@ public class CacheConfiguration {
             cm.createCache(codemotion.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(codemotion.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(codemotion.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(codemotion.domain.Task.class.getName(), jcacheConfiguration);
+            cm.createCache(codemotion.domain.Category.class.getName(), jcacheConfiguration);
+            cm.createCache(codemotion.domain.Category.class.getName() + ".tasks", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

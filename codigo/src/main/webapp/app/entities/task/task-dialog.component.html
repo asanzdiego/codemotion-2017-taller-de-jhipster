@@ -1,0 +1,78 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myTaskLabel" jhiTranslate="codemotionApp.task.home.createOrEditLabel">Create or edit a Task</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!task.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="task.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="codemotionApp.task.title" for="field_title">Title</label>
+            <input type="text" class="form-control" name="title" id="field_title"
+                [(ngModel)]="task.title" required />
+            <div [hidden]="!(editForm.controls.title?.dirty && editForm.controls.title?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.title?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="codemotionApp.task.priority" for="field_priority">Priority</label>
+            <select class="form-control" name="priority" [(ngModel)]="task.priority" id="field_priority"  required>
+                <option value="HIGH">{{'codemotionApp.Priority.HIGH' | translate}}</option>
+                <option value="NORMAL">{{'codemotionApp.Priority.NORMAL' | translate}}</option>
+                <option value="LOW">{{'codemotionApp.Priority.LOW' | translate}}</option>
+            </select>
+            <div [hidden]="!(editForm.controls.priority?.dirty && editForm.controls.priority?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.priority?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="codemotionApp.task.user" for="field_user">User</label>
+            <input type="text" class="form-control" name="user" id="field_user"
+                [(ngModel)]="task.user" required />
+            <div [hidden]="!(editForm.controls.user?.dirty && editForm.controls.user?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.user?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="codemotionApp.task.expirationDate" for="field_expirationDate">Expiration Date</label>
+            <div class="input-group">
+                <input id="field_expirationDate" type="text" class="form-control" name="expirationDate" ngbDatepicker  #expirationDateDp="ngbDatepicker" [(ngModel)]="task.expirationDate"
+                />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-secondary" (click)="expirationDateDp.toggle()"><i class="fa fa-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="codemotionApp.task.category" for="field_category">Category</label>
+            <select class="form-control" id="field_category" name="category" [(ngModel)]="task.category" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="categoryOption.id === task.category?.id ? task.category : categoryOption" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

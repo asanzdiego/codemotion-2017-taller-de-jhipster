@@ -1,0 +1,43 @@
+
+<div *ngIf="task">
+    <h2><span jhiTranslate="codemotionApp.task.detail.title">Task</span> {{task.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="codemotionApp.task.title">Title</span></dt>
+        <dd>
+            <span>{{task.title}}</span>
+        </dd>
+        <dt><span jhiTranslate="codemotionApp.task.priority">Priority</span></dt>
+        <dd>
+            <span jhiTranslate="{{'codemotionApp.Priority.' + task.priority}}">{{task.priority}}</span>
+        </dd>
+        <dt><span jhiTranslate="codemotionApp.task.user">User</span></dt>
+        <dd>
+            <span>{{task.user}}</span>
+        </dd>
+        <dt><span jhiTranslate="codemotionApp.task.expirationDate">Expiration Date</span></dt>
+        <dd>
+            <span>{{task.expirationDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span jhiTranslate="codemotionApp.task.category">Category</span></dt>
+        <dd>
+            <div *ngIf="task.category">
+                <a [routerLink]="['/category', task.category?.id]">{{task.category?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'task/'+ task.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

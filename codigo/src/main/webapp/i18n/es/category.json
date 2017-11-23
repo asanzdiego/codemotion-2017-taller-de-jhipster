@@ -1,0 +1,23 @@
+{
+    "codemotionApp": {
+        "category" : {
+            "home": {
+                "title": "Categories",
+                "createLabel": "Crear nuevo Category",
+                "createOrEditLabel": "Crear o editar Category"
+            },
+            "created": "Un nuevo Category ha sido creado con el identificador {{ param }}",
+            "updated": "Un Category ha sido actualizado con el identificador {{ param }}",
+            "deleted": "Un Category ha sido eliminado con el identificador {{ param }}",
+            "delete": {
+                "question": "¿Seguro que quiere eliminar Category {{ id }}?"
+            },
+            "detail": {
+                "title": "Category"
+            },
+            "title": "Title",
+            "image": "Image",
+            "task": "Task"
+        }
+    }
+}
