@@ -129,6 +129,28 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="user@localhost",authorities={"ROLE_USER"}, password = "user")
+    public void createTaskWithUser() throws Exception {
+        int databaseSizeBeforeCreate = taskRepository.findAll().size();
+
+        // Create the Task
+        restTaskMockMvc.perform(post("/api/tasks")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(task)))
+            .andExpect(status().isCreated());
+
+        // Validate the Task in the database
+        List<Task> taskList = taskRepository.findAll();
+        assertThat(taskList).hasSize(databaseSizeBeforeCreate + 1);
+        Task testTask = taskList.get(taskList.size() - 1);
+        assertThat(testTask.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testTask.getPriority()).isEqualTo(DEFAULT_PRIORITY);
+        assertThat(testTask.getUser()).isEqualTo("user@localhost");
+        assertThat(testTask.getExpirationDate()).isEqualTo(DEFAULT_EXPIRATION_DATE);
+    }
+    
+    @Test
+    @Transactional
     public void createTaskWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = taskRepository.findAll().size();
 
