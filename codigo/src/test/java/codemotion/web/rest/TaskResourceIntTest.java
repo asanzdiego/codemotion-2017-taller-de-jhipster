@@ -74,6 +74,8 @@ public class TaskResourceIntTest {
 
     private Task task;
 
+    private Task taskUser;
+    
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -100,9 +102,25 @@ public class TaskResourceIntTest {
         return task;
     }
 
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Task createEntityUser(EntityManager em) {
+        Task task = new Task()
+            .title(DEFAULT_TITLE)
+            .priority(DEFAULT_PRIORITY)
+            .user("user@localhost")
+            .expirationDate(DEFAULT_EXPIRATION_DATE);
+        return task;
+    }
+
     @Before
     public void initTest() {
         task = createEntity(em);
+        taskUser = createEntityUser(em);
     }
 
     @Test
@@ -242,6 +260,24 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="user@localhost",authorities={"ROLE_USER"}, password = "user")
+    public void getAllTasksWhitUser() throws Exception {
+        // Initialize the database
+        taskRepository.saveAndFlush(taskUser);
+
+        // Get all the taskList
+        restTaskMockMvc.perform(get("/api/tasks?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(taskUser.getId().intValue())))
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
+            .andExpect(jsonPath("$.[*].priority").value(hasItem(DEFAULT_PRIORITY.toString())))
+            .andExpect(jsonPath("$.[*].user").value(hasItem("user@localhost")))
+            .andExpect(jsonPath("$.[*].expirationDate").value(hasItem(DEFAULT_EXPIRATION_DATE.toString())));
+    }
+    
+    @Test
+    @Transactional
     @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void getTask() throws Exception {
         // Initialize the database
@@ -257,7 +293,25 @@ public class TaskResourceIntTest {
             .andExpect(jsonPath("$.user").value(DEFAULT_USER.toString()))
             .andExpect(jsonPath("$.expirationDate").value(DEFAULT_EXPIRATION_DATE.toString()));
     }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username="user@localhost",authorities={"ROLE_USER"}, password = "user")
+    public void getTaskWithUser() throws Exception {
+        // Initialize the database
+        taskRepository.saveAndFlush(taskUser);
 
+        // Get the task
+        restTaskMockMvc.perform(get("/api/tasks/{id}", taskUser.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id").value(taskUser.getId().intValue()))
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()))
+            .andExpect(jsonPath("$.priority").value(DEFAULT_PRIORITY.toString()))
+            .andExpect(jsonPath("$.user").value("user@localhost"))
+            .andExpect(jsonPath("$.expirationDate").value(DEFAULT_EXPIRATION_DATE.toString()));
+    }
+    
     @Test
     @Transactional
     public void getNonExistingTask() throws Exception {
@@ -299,6 +353,37 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="user@localhost",authorities={"ROLE_USER"}, password = "user")
+    public void updateTaskWhithUser() throws Exception {
+        // Initialize the database
+        taskRepository.saveAndFlush(taskUser);
+        int databaseSizeBeforeUpdate = taskRepository.findAll().size();
+
+        // Update the task
+        Task updatedTask = taskRepository.findOne(taskUser.getId());
+        updatedTask
+            .title(UPDATED_TITLE)
+            .priority(UPDATED_PRIORITY)
+            .user("user@localhost")
+            .expirationDate(UPDATED_EXPIRATION_DATE);
+
+        restTaskMockMvc.perform(put("/api/tasks")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedTask)))
+            .andExpect(status().isOk());
+
+        // Validate the Task in the database
+        List<Task> taskList = taskRepository.findAll();
+        assertThat(taskList).hasSize(databaseSizeBeforeUpdate);
+        Task testTask = taskList.get(taskList.size() - 1);
+        assertThat(testTask.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testTask.getPriority()).isEqualTo(UPDATED_PRIORITY);
+        assertThat(testTask.getUser()).isEqualTo("user@localhost");
+        assertThat(testTask.getExpirationDate()).isEqualTo(UPDATED_EXPIRATION_DATE);
+    }
+    
+    @Test
+    @Transactional
     @WithMockUser(username="admin@localhost",authorities={"ROLE_ADMIN"}, password = "admin")
     public void updateNonExistingTask() throws Exception {
         int databaseSizeBeforeUpdate = taskRepository.findAll().size();
@@ -334,6 +419,24 @@ public class TaskResourceIntTest {
         assertThat(taskList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
+    @Test
+    @Transactional
+    @WithMockUser(username="user@localhost",authorities={"ROLE_USER"}, password = "user")
+    public void deleteTaskWithUser() throws Exception {
+        // Initialize the database
+        taskRepository.saveAndFlush(taskUser);
+        int databaseSizeBeforeDelete = taskRepository.findAll().size();
+
+        // Get the task
+        restTaskMockMvc.perform(delete("/api/tasks/{id}", taskUser.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        // Validate the database is empty
+        List<Task> taskList = taskRepository.findAll();
+        assertThat(taskList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+    
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
