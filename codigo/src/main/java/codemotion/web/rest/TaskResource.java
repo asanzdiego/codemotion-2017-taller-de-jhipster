@@ -4,6 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import codemotion.domain.Task;
 
 import codemotion.repository.TaskRepository;
+import codemotion.security.AuthoritiesConstants;
+import codemotion.security.SecurityUtils;
 import codemotion.web.rest.errors.BadRequestAlertException;
 import codemotion.web.rest.util.HeaderUtil;
 import codemotion.web.rest.util.PaginationUtil;
@@ -56,6 +58,9 @@ public class TaskResource {
         if (task.getId() != null) {
             throw new BadRequestAlertException("A new task cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        	task.setUser(SecurityUtils.getCurrentUserLogin());
+    	}
         Task result = taskRepository.save(task);
         return ResponseEntity.created(new URI("/api/tasks/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -78,6 +83,14 @@ public class TaskResource {
         if (task.getId() == null) {
             return createTask(task);
         }
+        Task taskSaved = taskRepository.findOne(task.getId());
+        if (taskSaved == null || (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
+	        && !SecurityUtils.getCurrentUserLogin().equals(taskSaved.getUser()))) {
+	        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        	task.setUser(SecurityUtils.getCurrentUserLogin());
+    	}
         Task result = taskRepository.save(task);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, task.getId().toString()))
@@ -94,7 +107,12 @@ public class TaskResource {
     @Timed
     public ResponseEntity<List<Task>> getAllTasks(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Tasks");
-        Page<Task> page = taskRepository.findAll(pageable);
+        final Page<Task> page;
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        	page = this.taskRepository.findAll(pageable);
+        } else {
+        	page = this.taskRepository.findAllByUser(SecurityUtils.getCurrentUserLogin(), pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/tasks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -110,6 +128,10 @@ public class TaskResource {
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
         log.debug("REST request to get Task : {}", id);
         Task task = taskRepository.findOne(id);
+        if (task == null || (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
+			&& !SecurityUtils.getCurrentUserLogin().equals(task.getUser()))) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(task));
     }
 
@@ -123,6 +145,11 @@ public class TaskResource {
     @Timed
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         log.debug("REST request to delete Task : {}", id);
+        Task taskSaved = taskRepository.findOne(id);
+        if (taskSaved == null || (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
+	        && !SecurityUtils.getCurrentUserLogin().equals(taskSaved.getUser()))) {
+	        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         taskRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
