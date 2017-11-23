@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import codemotion.domain.Category;
 
 import codemotion.repository.CategoryRepository;
+import codemotion.security.AuthoritiesConstants;
 import codemotion.web.rest.errors.BadRequestAlertException;
 import codemotion.web.rest.util.HeaderUtil;
 import codemotion.web.rest.util.PaginationUtil;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,6 +53,7 @@ public class CategoryResource {
      */
     @PostMapping("/categories")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to save Category : {}", category);
         if (category.getId() != null) {
@@ -73,6 +76,7 @@ public class CategoryResource {
      */
     @PutMapping("/categories")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to update Category : {}", category);
         if (category.getId() == null) {
@@ -121,6 +125,7 @@ public class CategoryResource {
      */
     @DeleteMapping("/categories/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         log.debug("REST request to delete Category : {}", id);
         categoryRepository.delete(id);

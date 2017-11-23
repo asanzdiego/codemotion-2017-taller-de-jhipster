@@ -8,5 +8,5 @@ Llevo un año y medio desarrollando con [Spring Boot](http://projects.spring.io/
 
 ## Recursos
 
-- [Slides]()
-- [Código]()
+- [Slides](https://github.com/asanzdiego/codemotion-2017-taller-de-jhipster/raw/master/Codemotion%20-%202017%20-%20Taller%20de%20JHipster.pdf)
+- [Código](https://github.com/asanzdiego/codemotion-2017-taller-de-jhipster/tree/master/codigo)
